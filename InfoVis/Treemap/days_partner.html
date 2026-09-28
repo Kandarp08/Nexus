@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Treemap of Views by Language, Days Category, and Partnership</title>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+</head>
+<body>
+    <h1>Treemap of Views by Language, Days Category, and Partnership</h1>
+    <div id="treemapDiv" style="width:100%; height:800px;"></div>
+    <script>
+        // Data structure for views by language, days category, and partnership
+        const data = {
+            'DE': [
+                { category: 'Low', partner: 'Non-Partnered', views: 26040307 },
+                { category: 'Low', partner: 'Partnered', views: 35106707 },
+                { category: 'Medium', partner: 'Non-Partnered', views: 109988484 },
+                { category: 'Medium', partner: 'Partnered', views: 531213591 },
+                { category: 'High', partner: 'Non-Partnered', views: 44467391 },
+                { category: 'High', partner: 'Partnered', views: 612840882 }
+            ],
+            'ENGB': [
+                { category: 'Low', partner: 'Non-Partnered', views: 16066672 },
+                { category: 'Low', partner: 'Partnered', views: 9174134 },
+                { category: 'Medium', partner: 'Non-Partnered', views: 52396188 },
+                { category: 'Medium', partner: 'Partnered', views: 321714028 },
+                { category: 'High', partner: 'Non-Partnered', views: 53131959 },
+                { category: 'High', partner: 'Partnered', views: 926185983 }
+            ],
+            'ES': [
+                { category: 'Low', partner: 'Non-Partnered', views: 13014518 },
+                { category: 'Low', partner: 'Partnered', views: 28575653 },
+                { category: 'Medium', partner: 'Non-Partnered', views: 30783887 },
+                { category: 'Medium', partner: 'Partnered', views: 191841981 },
+                { category: 'High', partner: 'Non-Partnered', views: 14404880 },
+                { category: 'High', partner: 'Partnered', views: 201223414 }
+            ],
+            'FR': [
+                { category: 'Low', partner: 'Non-Partnered', views: 19905194 },
+                { category: 'Low', partner: 'Partnered', views: 181815976 },
+                { category: 'Medium', partner: 'Non-Partnered', views: 62329100 },
+                { category: 'Medium', partner: 'Partnered', views: 415294586 },
+                { category: 'High', partner: 'Non-Partnered', views: 45969330 },
+                { category: 'High', partner: 'Partnered', views: 463432140 }
+            ],
+            'PTBR': [
+                { category: 'Low', partner: 'Non-Partnered', views: 9773600 },
+                { category: 'Low', partner: 'Partnered', views: 48327636 },
+                { category: 'Medium', partner: 'Non-Partnered', views: 16763823 },
+                { category: 'Medium', partner: 'Partnered', views: 384586954 },
+                { category: 'High', partner: 'Non-Partnered', views: 4692069 },
+                { category: 'High', partner: 'Partnered', views: 317319195 }
+            ],
+            'RU': [
+                { category: 'Low', partner: 'Non-Partnered', views: 23707743 },
+                { category: 'Low', partner: 'Partnered', views: 78398007 },
+                { category: 'Medium', partner: 'Non-Partnered', views: 70904264 },
+                { category: 'Medium', partner: 'Partnered', views: 652745511 },
+                { category: 'High', partner: 'Non-Partnered', views: 43915841 },
+                { category: 'High', partner: 'Partnered', views: 839352684 }
+            ]
+        };
+
+        // Create arrays for Plotly treemap data
+        const labels = [];
+        const parents = [];
+        const values = [];
+
+        // Populate the arrays
+        Object.keys(data).forEach(lang => {
+            labels.push(lang);
+            parents.push('');
+            values.push(0); // Placeholder for the parent node
+
+            const categoriesAdded = new Set();
+
+            data[lang].forEach(entry => {
+                // Add category if not already added
+                if (!categoriesAdded.has(entry.category)) {
+                    labels.push(`${lang} - ${entry.category}`);
+                    parents.push(lang);
+                    values.push(0); // Placeholder for the category node
+                    categoriesAdded.add(entry.category);
+                }
+
+                // Add partner/non-partner data under the category
+                labels.push(`${lang} - ${entry.category} - ${entry.partner}`);
+                parents.push(`${lang} - ${entry.category}`);
+                values.push(entry.views);
+            });
+        });
+
+        // Treemap data for Plotly
+        const treemapData = {
+            type: 'treemap',
+            labels: labels,
+            parents: parents,
+            values: values,
+            textinfo: 'label+value+percent parent'
+        };
+
+        // Layout configuration
+        const layout = {
+            title: 'Treemap of Views by Language, Days Category, and Partnership',
+            margin: { t: 50, l: 25, r: 25, b: 25 }
+        };
+
+        // Render the treemap
+        Plotly.newPlot('treemapDiv', [treemapData], layout);
+    </script>
+</body>
+</html>

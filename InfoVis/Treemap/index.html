@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Twitch Viewer Treemap</title>
+    <!-- Include Plotly.js -->
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <!-- Inline CSS for basic styling -->
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f7f7f7;
+            margin: 0;
+            padding: 20px;
+        }
+        .treemap-container {
+            max-width: 1000px;
+            margin: auto;
+        }
+    </style>
+</head>
+<body>
+    <div id="treemap" class="treemap-container"></div>
+
+    <script>
+        const dataUrl = 'twitch/total_twitch_views.csv'; // Replace with actual URL
+        console.log(dataUrl);
+        
+        fetch(dataUrl)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok: ' + response.statusText);
+                }
+                return response.text();
+            })
+            .then(csvData => {
+                const rows = csvData.trim().split('\n').map(row => row.split(','));
+                const headers = rows[0];
+                const data = rows.slice(1);
+                
+                const language = data.map(row => row[0]);
+                const views = data.map(row => parseFloat(row[1]));
+                const labels = language.map(language => `Language: ${language}`);
+
+                const trace = {
+                    type: 'treemap',
+                    labels: labels,
+                    parents: Array(data.length).fill(''),
+                    values: views,
+                    textinfo: 'label+value+percent entry',
+                    hovertemplate: '<b>%{label}</b><br>Views: %{value}<extra></extra>',
+                    marker: {
+                        colors: views,
+                        colorscale: [
+                            [0, '#ffebd5'],
+                            [0.5, '#f39c73'],
+                            [1, '#b8441d']
+                        ],
+                        colorbar: {
+                            title: 'Views',
+                            titleside: 'right',
+                            tickmode: 'array',
+                            tickvals: [Math.min(...views), (Math.max(...views) + Math.min(...views)) / 2, Math.max(...views)],
+                            ticktext: ['Low', 'Medium', 'High'],
+                            len: 0.4,
+                            x: 1.1,
+                            y: 0.5
+                        },
+                        line: {
+                            color: 'white',
+                            width: 2
+                        }
+                    }
+                };
+
+                const layoutOptions = {
+                    title: {
+                        text: 'Twitch Viewer Treemap',
+                        x: 0.5,
+                        font: {
+                            size: 20
+                        }
+                    },
+                    margin: {
+                        l: 10, r: 50, t: 50, b: 10
+                    },
+                    paper_bgcolor: '#f7f7f7',
+                    plot_bgcolor: '#f7f7f7',
+                    treemapcolorway: ['#f39c73', '#b8441d', '#ffebd5'],
+                    extendsunburstcolorway: true,
+                };
+
+                Plotly.newPlot('treemap', [trace], layoutOptions);
+            })
+            .catch(error => {
+                console.error('Error fetching or parsing data:', error);
+            });
+    </script>
+</body>
+</html>

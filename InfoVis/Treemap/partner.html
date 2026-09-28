@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Treemap of Partnered and Non-Partnered Views</title>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+</head>
+<body>
+    <h1>Treemap of Partnered and Non-Partnered Views by Language</h1>
+    <div id="treemapDiv" style="width:100%; height:600px;"></div>
+    <script>
+        // Data arrays
+        const languages = ['DE', 'ENGB', 'ES', 'FR', 'PTBR', 'RU'];
+        const nonPartneredViews = [180496182, 121594819, 58203285, 128203624, 31229492, 138527848];
+        const partneredViews = [1179161180, 1257074145, 421641048, 1060542702, 750233785, 1570496202];
+
+        // Create combined data for treemap
+        const labels = [];
+        const parents = [];
+        const values = [];
+
+        // Add main language nodes
+        languages.forEach((lang) => {
+            labels.push(lang);
+            parents.push('');
+            values.push(0); // Placeholder, will not affect visual structure
+        });
+
+        // Populate subcategories for non-partnered and partnered views
+        languages.forEach((lang, i) => {
+            labels.push(`${lang} - Non-Partnered`);
+            parents.push(lang);
+            values.push(nonPartneredViews[i]);
+
+            labels.push(`${lang} - Partnered`);
+            parents.push(lang);
+            values.push(partneredViews[i]);
+        });
+
+        // Main treemap data structure
+        const treemapData = {
+            type: 'treemap',
+            labels: labels,
+            parents: parents,
+            values: values,
+            textinfo: 'label+value+percent parent'
+        };
+
+        // Layout configuration
+        const layout = {
+            title: 'Treemap of Partnered and Non-Partnered Views by Language',
+            margin: { t: 50, l: 25, r: 25, b: 25 }
+        };
+
+        // Plot the treemap
+        Plotly.newPlot('treemapDiv', [treemapData], layout);
+    </script>
+</body>
+</html>

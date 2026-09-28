@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Interactive Parallel Coordinates Plot</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+</head>
+<body>
+    <div>
+        <label><input type="checkbox" id="days" checked> Days</label>
+        <label><input type="checkbox" id="views" checked> Views</label>
+        <label><input type="checkbox" id="partner" checked> Partner</label>
+        <label><input type="checkbox" id="lang" checked> Language</label>
+        <button onclick="updatePlot()">Update Plot</button>
+    </div>
+    <div id="parallel-coordinates-plot" style="height: 600px;"></div>
+    <div id="parallel-coordinates-plot-1" style="height: 600px;"></div>
+    <div id="parallel-coordinates-plot-2" style="height: 600px;"></div>
+
+    
+    <script src="script.js"></script>
+</body>
+</html>
